@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "civilaid-65d59",
+    "CivilAid": "civilaid-778cc",
+    "civilaid": "civilaid-65d59"
+  },
+  "targets": {},
+  "etags": {}
+}

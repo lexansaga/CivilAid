@@ -1,0 +1,17 @@
+@import url(Styles.css);
+
+footer {
+        padding: 28px 0;
+        background: #336699;
+}
+
+footer h5 {
+        text-align: center;
+        color: #fff;
+        font-weight: 400;
+        font-size: 18px;
+}
+
+footer h5 span {
+        display: block;
+}

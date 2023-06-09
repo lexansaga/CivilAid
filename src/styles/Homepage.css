@@ -1,0 +1,221 @@
+@import url('Styles.css');
+
+/* Hero - Start */
+.hero {
+        height: clamp(600px, calc(100vh - 120px), 1080px);
+        position: relative;
+}
+
+.hero:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background: rgb(15, 138, 176);
+        background: linear-gradient(0deg, rgba(15, 138, 176, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+        z-index: 1;
+}
+
+.hero-wrap,
+.hero-wrap img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+}
+
+.hero-banner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+}
+
+.hero-banner h1,
+.hero-banner h1 span {
+        font-family: var(--font-header);
+        color: #fff;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: clamp(32px, 4.688vw, 90px);
+        font-weight: 400;
+}
+
+.hero-banner h1 span {
+        color: #FFCC66;
+}
+
+.hero-arrow {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 2;
+        font-size: clamp(32px, 2.500vw, 48px);
+        color: #fff;
+        animation: arrowDown 2.5s ease-in-out infinite;
+}
+
+@keyframes arrowDown {
+
+        0%,
+        100% {
+                bottom: 0px;
+        }
+
+        50% {
+                bottom: 32px;
+        }
+}
+
+@media only screen and (max-width: 991px) {
+        .hero {
+                height: clamp(380px, calc(100vh - 120px), 480px);
+        }
+
+        .hero-banner h1,
+        .hero-banner h1 span {
+                line-height: 1;
+                font-size: clamp(32px, 5.651vw, 56px);
+        }
+
+        .hero-arrow {
+                font-size: clamp(26px, 3.532vw, 35px);
+        }
+}
+
+/* Hero - End */
+
+/* Welcome - Start */
+
+.welcome {
+        padding: 120px 0;
+}
+
+.welcome-content {
+        display: grid;
+        gap: 28px;
+        margin: 48px auto 0;
+        max-width: 1200px;
+}
+
+.welcome-content p {
+        text-align: center;
+        line-height: 1.5;
+        font-size: 18px;
+        color: var(--font-default);
+}
+
+@media only screen and (max-width: 991px) {
+        .welcome {
+                padding: clamp(48px, 9.889vw, 98px) 0;
+        }
+
+        .welcome-content {
+                margin: clamp(28px, 4.844vw, 48px) auto 0;
+        }
+}
+
+/* Welcome - End */
+
+/* Topic - Start */
+.topics {
+        padding: 120px 0
+}
+
+.topic-wrapper {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        height: 33vw;
+        margin: 48px 0 0 0;
+}
+
+.topic-item {
+        position: relative;
+        overflow: hidden;
+}
+
+.topic-item:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgb(0, 0, 0);
+        background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.topic-item:hover:before {
+        background: rgb(51, 102, 153);
+        background: linear-gradient(0deg, rgba(51, 102, 153, 1) 0%, rgba(255, 204, 102, 0.6979166666666667) 100%);
+}
+
+.topic-item .topic-title {
+        width: fit-content;
+        height: fit-content;
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        font-size: clamp(32px, 2.604vw, 50px);
+        color: #fff;
+        text-align: center;
+        font-weight: 400;
+        font-family: vaR(--font-header);
+        text-transform: uppercase;
+        line-height: 1.3;
+}
+
+.topic-item:hover .topic-title {
+        bottom: 50%;
+        transform: translate(-50%, 50%);
+}
+
+.topic-item img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        z-index: -1;
+}
+
+@media only screen and (max-width:1024px) {
+        .topic-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+                height: 80vw;
+                min-height: 320px;
+        }
+
+}
+
+@media only screen and (max-width:768px) {
+        .topic-wrapper {
+                grid-template-columns: repeat(1, 1fr);
+                height: unset;
+                max-width: clamp(280px, 62.500vw, 480px);
+                float: none;
+                margin: 48px auto 0;
+                gap: 8px;
+
+        }
+
+        .topic-wrapper .topic-item {
+                height: clamp(280px, 62.500vw, 480px);
+        }
+
+        .topic-item .topic-title {
+                font-size: clamp(28px, 6.250vw, 48px);
+        }
+
+}
+
+/* Topic - End */
