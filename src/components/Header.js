@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../styles/Header.css";
 import Logo from "../assets/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,15 +8,35 @@ import {
     faBars,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { Link } from "react-router-dom";
+
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     useEffect(() => {
         document.body.classList.toggle("menu-open", isOpen);
     }, [isOpen]);
 
+    const headerRef = useRef(null);
+    useEffect(() => {
+        const handleScroll = () => {
+            const headerHeight = headerRef.current.offsetHeight;
+            if (window.scrollY >= headerHeight) {
+                document.body.classList.add("fixed-header");
+            } else {
+                document.body.classList.remove("fixed-header");
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
     return (
         <>
-            <header className="header">
+            <header className="header" ref={headerRef}>
                 <div className="container header-container">
                     <div className="navigation-container">
                         <button
@@ -25,11 +45,14 @@ const Header = () => {
                         >
                             <FontAwesomeIcon icon={faBars} />
                         </button>
-                        <img src={Logo} className="logo" />
+                        <a href="/" className="logo">
+                            <img src={Logo} className="logo" />
+                        </a>
+
                         <nav className="menu-navigation">
-                            <a href="/#">Home</a>
-                            <a href="/#">About</a>
-                            <a href="/#">Formulas</a>
+                            <a href="index.html">Home</a>
+                            <a href="#about">About</a>
+                            <Link to="/subjects">Subjects</Link>
                             <button
                                 className="menu-close"
                                 onClick={() => setIsOpen(!isOpen)}

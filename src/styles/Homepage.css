@@ -6,6 +6,11 @@
         position: relative;
 }
 
+.body.internal .hero {
+        height: clamp(320px, calc(100vh - 120px), 480px);
+        position: relative;
+}
+
 .hero:before {
         content: "";
         position: absolute;
@@ -16,6 +21,11 @@
         background: rgb(15, 138, 176);
         background: linear-gradient(0deg, rgba(15, 138, 176, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
         z-index: 1;
+}
+
+.body.internal .hero:before {
+        background: linear-gradient(0deg, rgba(51, 102, 153, 1) 0%, rgba(255, 204, 102, 1) 100%);
+        opacity: 0.8;
 }
 
 .hero-wrap,
@@ -45,6 +55,11 @@
         text-transform: uppercase;
         font-size: clamp(32px, 4.688vw, 90px);
         font-weight: 400;
+}
+
+.body.internal .hero-banner h1,
+.body.internal .hero-banner h1 span {
+        font-size: clamp(32px, 4.688vw, 62px);
 }
 
 .hero-banner h1 span {
@@ -81,7 +96,7 @@
         .hero-banner h1,
         .hero-banner h1 span {
                 line-height: 1;
-                font-size: clamp(32px, 5.651vw, 56px);
+                font-size: clamp(42px, 5.651vw, 56px);
         }
 
         .hero-arrow {
@@ -131,13 +146,14 @@
 .topic-wrapper {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        height: 33vw;
+
         margin: 48px 0 0 0;
 }
 
 .topic-item {
         position: relative;
         overflow: hidden;
+        height: 33vw;
 }
 
 .topic-item:before {
@@ -163,7 +179,7 @@
         bottom: 50px;
         left: 50%;
         transform: translate(-50%, 0);
-        font-size: clamp(32px, 2.604vw, 50px);
+        font-size: clamp(32px, 2.604vw, 42px);
         color: #fff;
         text-align: center;
         font-weight: 400;
@@ -194,6 +210,14 @@
                 height: 80vw;
                 min-height: 320px;
         }
+
+}
+
+@media only screen and (max-width: 991px) {
+        .topics {
+                padding: clamp(48px, 9.889vw, 98px) 0;
+        }
+
 
 }
 

@@ -7,9 +7,19 @@
         padding: 28px 0;
 }
 
+body.fixed-header .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 99;
+        padding: 12px 0;
+        box-shadow: 1px 1px 28px rgba(0, 0, 0, 0.2);
+}
+
 .header-container {
         display: flex;
         justify-content: space-between;
+        align-items: center;
 }
 
 .logo {
@@ -72,7 +82,7 @@
 
 .search-icon {
         position: absolute;
-        top: 50%;
+        top: 38%;
         left: 25px;
         font-size: 18px;
         transform: translate(0, -50%);
@@ -166,7 +176,11 @@
         }
 
         .search-input-wrap:not(:hover) .search-icon {
-                transform: translate(-8px, -8px);
+                transform: translate(-8px, -3px);
+        }
+
+        .search-input-wrap:hover .search-icon {
+                top: 50%;
         }
 
         .menu-navigation {
