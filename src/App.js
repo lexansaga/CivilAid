@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 
 import Home from "./Home";
 import Subjects from "./Subjects";
+import Subject from "./Subject";
+import Admin from "./Admin";
 
 export default function App() {
     return (
@@ -10,6 +12,8 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="subjects" element={<Subjects />} />
+                <Route path="subject" element={<Subject />} />
+                <Route path="admin" element={<Admin />} />
             </Routes>
         </div>
     );

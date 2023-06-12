@@ -82,7 +82,7 @@ body.fixed-header .header {
 
 .search-icon {
         position: absolute;
-        top: 38%;
+        top: 50%;
         left: 25px;
         font-size: 18px;
         transform: translate(0, -50%);
@@ -176,6 +176,7 @@ body.fixed-header .header {
         }
 
         .search-input-wrap:not(:hover) .search-icon {
+                top: 38%;
                 transform: translate(-8px, -3px);
         }
 
@@ -272,13 +273,14 @@ body.fixed-header .header {
                 padding: 12px 20px 12px 42px;
         }
 
-        .search-icon {
+        .search-input-wrap:not(:hover) .search-icon {
                 font-size: 16px;
-
+                top: 50%;
                 left: 15px;
+                transform: translate(0px, -8px);
         }
 
-        .search-input-wrap:not(:hover) .search-icon {
-                transform: translate(0px, -8px);
+        .search-input-wrap .search-icon {
+                left: 15px;
         }
 }

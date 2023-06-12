@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import "./styles/Homepage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 // Assets
 import Hero_Banner from "./assets/hero-bg.jpg";
@@ -83,13 +84,17 @@ const Home = () => {
                 </div>
 
                 <div className="topic-wrapper">
-                    <TopicItem image={Math} title={"Math"} link="#" />
+                    <TopicItem image={Math} title={"Math"} path="/subjects" />
                     <TopicItem
                         image={HydroGeo}
                         title="Hydraulics & Geo"
-                        link="#"
+                        path="/subjects"
                     />
-                    <TopicItem image={Design} title={"Design"} link="#" />
+                    <TopicItem
+                        image={Design}
+                        title={"Design"}
+                        path="/subjects"
+                    />
                 </div>
             </section>
 
@@ -104,9 +109,15 @@ function TopicItem(props) {
             <img className="topic-image" src={props.image} alt={props.title} />
 
             <h2 className="topic-title">{props.title}</h2>
-            <a className="overlink" href={props.link}>
-                &nbsp;
-            </a>
+            <Link
+                className="overlink"
+                to={{
+                    pathname: props.path,
+                    state: props.state,
+                }}
+            >
+                Learn More
+            </Link>
         </div>
     );
 }

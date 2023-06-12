@@ -1,0 +1,59 @@
+@import url(Styles.css);
+
+.form {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+}
+
+.form .input-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+}
+
+.form .input-wrap input {
+
+        z-index: 2;
+}
+
+.form .input-wrap .label {
+        font-family: var(--font-default);
+        font-size: 20px;
+        font-weight: 500;
+}
+
+.ql-editor {
+        min-height: 320px;
+}
+
+/* #react-select-7-listbox {
+        z-index: 9999999999;
+} */
+
+.dropdown div[id*="listbox"] {
+        z-index: 99;
+}
+
+#react-select-7-listbox div {
+        cursor: pointer;
+}
+
+.css-qbdosj-Input {
+        cursor: text;
+}
+
+.form .section-header {
+        background-color: var(--color-primary-light);
+        padding: 28px;
+}
+
+.form .section-header * {
+        color: #fff !important
+}
+
+.btn-wrap {
+        display: flex;
+        gap: 8px;
+}

@@ -1,0 +1,107 @@
+@import url(Styles.css);
+
+
+.accordion {
+        display: flex;
+        flex-direction: column;
+        border-radius: 5px;
+        overflow: hidden;
+
+}
+
+.accordion:not(.active) {
+        border-bottom: 1px solid transparent;
+}
+
+.accordion-header {
+        position: relative;
+        cursor: pointer;
+        background-color: var(--color-primary-light);
+        padding: 28px 32px;
+}
+
+.accordion-header h2 {
+        color: #fff;
+        font-family: var(--font-default);
+        font-weight: 400;
+        font-size: 24px;
+}
+
+
+.accordion-content {
+        padding: 48px 32px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        display: grid;
+        gap: 28px;
+
+}
+
+.accordion:not(.active) .accordion-content {
+        height: 0;
+        padding: 0 32px;
+        border: none;
+}
+
+.accordion-images {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 8px;
+}
+
+.accordion-image-wrap {
+        width: fit-content;
+        max-height: 320px;
+        overflow: hidden;
+}
+
+.accordion-image {
+        width: 100%;
+        max-height: inherit;
+        object-fit: contain;
+}
+
+.accordion .text-content {
+        display: grid;
+        gap: 12px
+}
+
+.accordion .text-content p {
+        font-size: 18px;
+        line-height: 1.5;
+}
+
+.accordion-indicator {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translate(0, -50%);
+
+}
+
+.accordion-indicator:not(.active) {
+        transform: translate(0, -50%) rotate(-180deg);
+}
+
+.accordion-indicator svg {
+        fill: #fff;
+        height: 25px;
+        width: 25px;
+        color: #fff;
+
+}
+
+.accordion-indicator.active .fa-plus {
+        display: none;
+}
+
+.accordion-indicator:not(.active) .fa-plus {
+        display: block;
+}
+
+.accordion-indicator:not(.active) .fa-minus {
+        display: none;
+}

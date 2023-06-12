@@ -3,8 +3,12 @@
 import React from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Banner from "./components/Banner";
 import "./styles/Homepage.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
+import { Link } from "react-router-dom";
 // Assets
 import Hero_Banner from "./assets/hero-bg.jpg";
 import Math from "./assets/math.jpg";
@@ -14,43 +18,32 @@ const Subjects = () => {
     return (
         <div className="body internal">
             <Header />
-            <section className="hero">
-                <div className="hero-wrap">
-                    <img
-                        src={Hero_Banner}
-                        className="hero-image section-bg"
-                        alt="Hero"
-                    />
-                </div>
-                <div className="hero-banner">
-                    <h1 className="hero-title">Choose Subjects</h1>
-                </div>
-            </section>
-
-            <section className="topics" id="topics">
-                <div className="topic-wrapper">
-                    <TopicItem image={Math} title={"Math"} link="#" />
-                    <TopicItem
-                        image={HydroGeo}
-                        title="Hydraulics & Geo"
-                        link="#"
-                    />
-                    <TopicItem image={Design} title={"Design"} link="#" />
-                    <TopicItem image={Math} title={"Math"} link="#" />
-                    <TopicItem
-                        image={HydroGeo}
-                        title="Hydraulics & Geo"
-                        link="#"
-                    />
-                    <TopicItem image={Design} title={"Design"} link="#" />
-                    <TopicItem image={Math} title={"Math"} link="#" />
-                    <TopicItem
-                        image={HydroGeo}
-                        title="Hydraulics & Geo"
-                        link="#"
-                    />
-                    <TopicItem image={Design} title={"Design"} link="#" />
-                </div>
+            <Banner
+                image={Hero_Banner}
+                title="Choose Subjescts"
+                link="#topics"
+            />
+            <section id="ip-container">
+                <section className="topics" id="topics">
+                    <div className="topic-wrapper">
+                        <TopicItem
+                            image={Math}
+                            title={"Math"}
+                            path="/subject"
+                            state={{
+                                title: "Math",
+                            }}
+                        />
+                        <TopicItem
+                            image={HydroGeo}
+                            title="Hydraulics & Geo"
+                            path="/subject"
+                            state={{
+                                title: "Hydraulics & Geo",
+                            }}
+                        />
+                    </div>
+                </section>
             </section>
 
             <Footer />
@@ -61,12 +54,16 @@ const Subjects = () => {
 function TopicItem(props) {
     return (
         <div className="topic-item">
-            <img className="topic-image" src={props.image} alt={props.title} />
+            <img
+                className="topic-image"
+                src={props.image}
+                alt={props.title ? props.title : "Image"}
+            />
 
             <h2 className="topic-title">{props.title}</h2>
-            <a className="overlink" href={props.link}>
-                &nbsp;
-            </a>
+            <Link className="overlink" to={props.path} state={props.state}>
+                Learn More
+            </Link>
         </div>
     );
 }
