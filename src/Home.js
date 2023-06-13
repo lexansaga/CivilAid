@@ -1,6 +1,6 @@
 // Modules
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "./styles/Homepage.css";
@@ -8,12 +8,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
+import { Fetch } from "./firebase";
+import { GetRandomBackground } from "./Utils";
 // Assets
 import Hero_Banner from "./assets/hero-bg.jpg";
 import Math from "./assets/math.jpg";
 import Design from "./assets/design.jpg";
 import HydroGeo from "./assets/hydrogeo.jpg";
 const Home = () => {
+    const [topics, setTopics] = useState([]);
+    useEffect(() => {
+        async function getFetch() {
+            const fetch = await Fetch("Topics");
+            setTopics(fetch);
+        }
+        getFetch();
+        console.log(topics);
+    }, []);
+
     return (
         <div className="body home">
             <Header />
@@ -84,7 +96,24 @@ const Home = () => {
                 </div>
 
                 <div className="topic-wrapper">
-                    <TopicItem image={Math} title={"Math"} path="/subjects" />
+                    {topics &&
+                        topics.map((item, index) => {
+                            return (
+                                <TopicItem
+                                    image={
+                                        item.url
+                                            ? item.url[0]
+                                            : GetRandomBackground()
+                                    }
+                                    title={item.label}
+                                    path="/subjects"
+                                    state={{
+                                        title: item.link,
+                                    }}
+                                />
+                            );
+                        })}
+                    {/* <TopicItem image={Math} title={"Math"} path="/subjects" />
                     <TopicItem
                         image={HydroGeo}
                         title="Hydraulics & Geo"
@@ -94,7 +123,7 @@ const Home = () => {
                         image={Design}
                         title={"Design"}
                         path="/subjects"
-                    />
+                    /> */}
                 </div>
             </section>
 

@@ -57,3 +57,14 @@
         display: flex;
         gap: 8px;
 }
+
+@media only screen and (max-width: 480px) {
+        .btn-wrap {
+                flex-direction: column;
+                align-items: center;
+        }
+
+        .btn-wrap .btn {
+                width: 100%;
+        }
+}

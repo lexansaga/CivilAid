@@ -8,6 +8,7 @@ const FileInput = (props) => {
         const files = Array.from(e.target.files);
         const paths = files.map((file) => URL.createObjectURL(file));
         props.setSelectedImage(paths);
+        props.setFiles(files);
     };
 
     return (

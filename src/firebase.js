@@ -16,7 +16,15 @@ import {
     onSnapshot,
 } from "firebase/firestore";
 
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+    getStorage,
+    ref,
+    listAll,
+    uploadBytes,
+    uploadBytesResumable,
+    getDownloadURL,
+    updateMetadata,
+} from "firebase/storage";
 import { useEffect } from "react";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -39,9 +47,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const firestore = getFirestore(app);
-const storage = getStorage();
+const storage = getStorage(app);
 
-const Add = async (parent, id, data) => {
+const Add = async (parent, id, data, hasAlert) => {
     try {
         // if (id) {
         //     addDoc(collection(firestore, parent), data)
@@ -62,7 +70,9 @@ const Add = async (parent, id, data) => {
         // }
 
         await setDoc(doc(firestore, parent, `${id}`), data);
-        alert(`${parent} added successfully!`);
+        if (hasAlert === false) {
+            alert(`${parent} added successfully!`);
+        }
     } catch (e) {
         alert("An error occured! Please try again later!");
         console.log(`Error on Add : ${e}`);
@@ -98,7 +108,7 @@ const Fetch = async (collectionName, collectionQuery) => {
         //     console.log(doc.id, " => ", doc.data());
         options.push(doc.data());
     });
-    console.log(options);
+    // console.log(options);
     return options;
 
     // var options = [];
@@ -117,15 +127,164 @@ const Fetch = async (collectionName, collectionQuery) => {
     // return options;
 };
 
-const Upload = (path, file) => {
-    const storageRef = ref(storage, path);
+const Upload = (path, files, fileName) => {
+    var filePaths = [];
+    files.map((file, index) => {
+        // 'file' comes from the Blob or File API
+        console.log(file);
+        const extension = file.name.split(".").slice(-1);
+        var storageRef = "";
+        if (files.length <= 1) {
+            storageRef = fileName
+                ? ref(storage, `${path}/${fileName}`)
+                : ref(storage, `${path}/${file.name}`);
+        } else {
+            storageRef = fileName
+                ? ref(storage, `${path}/${fileName}-${index}`)
+                : ref(storage, `${path}/${file.name}-${index}`);
+        }
 
-    // 'file' comes from the Blob or File API
-    uploadBytes(storageRef, file).then((snapshot) => {
-        console.log("Uploaded a blob or file!");
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
-        return true;
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const percent = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+
+                // update progress
+                // console.log(percent);
+            },
+            (err) => console.log(err),
+            () => {
+                // download url
+                getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                    filePaths.push(url);
+                });
+            }
+        );
+
+        alert("Upload Success!");
+        console.log(filePaths);
     });
 };
 
-export { app, analytics, firestore, storage, Fetch, Add, Delete, Upload };
+const UploadThenAdd = (path, files, fileName, parent, id, data) => {
+    var filePaths = [];
+    files.map((file, index) => {
+        // 'file' comes from the Blob or File API
+        console.log(file);
+        const extension = file.name.split(".").slice(-1);
+        var storageRef = "";
+        if (files.length <= 1) {
+            storageRef = fileName
+                ? ref(storage, `${path}/${fileName}`)
+                : ref(storage, `${path}/${file.name}`);
+        } else {
+            storageRef = fileName
+                ? ref(storage, `${path}/${fileName}-${index}`)
+                : ref(storage, `${path}/${file.name}-${index}`);
+        }
+
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const percent = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+
+                // update progress
+                // console.log(percent);
+            },
+            (err) => console.log(err),
+            () => {
+                // download url
+                getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                    const newMetadata = {
+                        filePath: url,
+                    };
+                    filePaths.push(url);
+                    Add(
+                        parent,
+                        id,
+                        {
+                            ...data,
+                            ...{
+                                url: filePaths,
+                            },
+                        },
+                        false
+                    );
+                });
+            }
+        );
+
+        // alert("Upload Success!");
+        console.log(filePaths);
+    });
+};
+const GetFileByFileName = async (path, fileName) => {
+    const listRef = ref(storage, "Assets/Subjects");
+    var results = [];
+    // Find all the prefixes and items.
+    listAll(listRef)
+        .then((res) => {
+            console.log(res);
+            res.prefixes.forEach((folderRef) => {
+                // All the prefixes under listRef.
+                // You may call listAll() recursively on them.
+                console.log(folderRef.root);
+            });
+            res.items.forEach((itemRef) => {
+                // All the items under listRef.
+                results.push(itemRef.fullPath);
+                var fileBucket = itemRef.bucket;
+                var filePath = itemRef.fullPath;
+                var fullFilePath = `gs://${fileBucket}/${filePath}`;
+                console.log(fullFilePath);
+            });
+        })
+        .catch((error) => {
+            // Uh-oh, an error occurred!
+        });
+    return results;
+};
+// async function fetchFilesContainingText(text) {
+//     const storageRef = ref(storage, "Assets/Subjects");
+//     const files = [];
+
+//     try {
+//         const { items } = listAll(storageRef);
+//         console.log(items);
+//         // Iterate over the items and check if the filename contains the specified text
+//         for (const item of items) {
+//             const { name } = item;
+
+//             if (name.includes(text)) {
+//                 files.push(name);
+//             }
+//         }
+
+//         return files;
+//     } catch (error) {
+//         // Handle any errors that occur during the fetch
+//         console.error("Error fetching files:", error);
+//         return [];
+//     }
+// }
+
+export {
+    app,
+    analytics,
+    firestore,
+    storage,
+    Fetch,
+    Add,
+    Delete,
+    Upload,
+    UploadThenAdd,
+    GetFileByFileName,
+};

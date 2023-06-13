@@ -7,9 +7,18 @@ import Banner from "./components/Banner";
 import TabbedNavigation from "./components/TabbedNavigation";
 import FileInput from "./components/FIleInput";
 import Input from "./components/Input";
-import { app, firestore, Delete, Add, Fetch } from "./firebase";
+import {
+    app,
+    firestore,
+    Delete,
+    Add,
+    Fetch,
+    Upload,
+    UploadThenAdd,
+    GetFileByFileName,
+} from "./firebase";
 import { where } from "firebase/firestore";
-
+import { CleanText } from "./Utils";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 import "./styles/Admin.css";
@@ -24,6 +33,11 @@ import Hero_Banner from "./assets/hero-bg.jpg";
 const Admin = (props) => {
     useEffect(() => {
         // fetch();
+        async function getAll() {
+            // console.log(await fetchFilesContainingText("retry"));
+            console.log(await GetFileByFileName("retry"));
+        }
+        getAll();
     });
     return (
         <div className="body internal">
@@ -125,12 +139,17 @@ function SetTopics() {
         </>
     );
 }
+// *******************************************************
+// *******************************************************
+//  Subject
+// *******************************************************
+// *******************************************************
 function ManageTopic() {
     const [topicName, setTopicName] = useState("");
     const [topic, setTopic] = useState("");
     const [topicList, setTopicList] = useState([]);
-    const [isTopicExists, setTopicExists] = useState(false);
 
+    const [files, setFiles] = useState([]);
     const [selectedImage, setSelectedImage] = useState([]);
     useEffect(() => {
         getTopics();
@@ -138,14 +157,41 @@ function ManageTopic() {
             setTopicList(await Fetch("Topics"));
         }
     }, []);
-    console.log(`Topic List : ${topicList}`);
+    // console.log(`Topic List : ${topicList}`);
     function hasKey(value, data) {
         console.log(`Has Key ${value}`);
         const keysArray = data.map((item) => item.value);
         return keysArray.includes(value.value);
     }
-    console.log(`Is Exists : ${isTopicExists}`);
-    console.log(`Revoke`);
+    const dataToAdd = {
+        value: topic.value,
+        label: topic.value,
+        link: CleanText(topic.value),
+    };
+    var isTopicExists = hasKey(topic, topicList);
+    const validate = (func) => {
+        if (isTopicExists) {
+            //  console.log(`Validate has key ${subject.value} ${subjectName}`);
+            if (func.includes("Update")) {
+                return topic && topicName;
+            } else {
+                return topic;
+            }
+        } else {
+            //     console.log(`Validate no key ${subject}`);
+            return topic;
+        }
+    };
+    const reset = () => {
+        setSelectedImage([]);
+        setFiles([]);
+        setTopic("");
+        setTopicName("");
+        setFiles([]);
+        //     setSubjectExists(false);
+    };
+    // console.log(`Is Exists : ${isTopicExists}`);
+    // console.log(`Revoke`);
     return (
         <>
             <div className="form AddTopic">
@@ -165,6 +211,7 @@ function ManageTopic() {
                         <div className="input-wrap">
                             <p className="label">Select Image</p>
                             <FileInput
+                                setFiles={setFiles}
                                 selectedImage={selectedImage}
                                 setSelectedImage={setSelectedImage}
                                 multiple="false"
@@ -180,7 +227,7 @@ function ManageTopic() {
                                 value={topic}
                                 onChange={(e) => {
                                     setTopic(e == null ? "" : e);
-                                    setTopicExists(hasKey(e, topicList));
+                                    isTopicExists = hasKey(topic, topicList);
                                 }}
                             />
                         </div>
@@ -197,11 +244,25 @@ function ManageTopic() {
                                 <button
                                     className="btn btn-primary"
                                     onClick={() => {
+                                        if (!validate("Update")) {
+                                            alert("Fill up all information!");
+                                            return;
+                                        }
                                         Delete("Topics", topic.value);
-                                        Add("Topics", topicName, {
-                                            value: topicName,
-                                            label: topicName,
-                                        });
+
+                                        UploadThenAdd(
+                                            `Assets/Topics`,
+                                            files,
+                                            topic.value,
+                                            `Topics`,
+                                            topic.value,
+                                            {
+                                                value: topic.value,
+                                                label: topic.value,
+                                                link: CleanText(topic.value),
+                                            }
+                                        );
+                                        reset();
                                     }}
                                 >
                                     Update Topic
@@ -209,12 +270,17 @@ function ManageTopic() {
                                 <button
                                     className="btn btn-primary"
                                     onClick={() => {
+                                        if (!validate("Delete")) {
+                                            alert("Fill up all information!");
+                                            return;
+                                        }
                                         if (
                                             window.confirm(
                                                 `Are you sure you want to delete ${topic.value}?`
-                                            ) == true
+                                            ) === true
                                         ) {
                                             Delete("Topics", topic.value);
+                                            reset();
                                         }
                                     }}
                                 >
@@ -225,11 +291,27 @@ function ManageTopic() {
                             <button
                                 className="btn btn-primary"
                                 onClick={() => {
-                                    //setTopicList([]);
-                                    Add("Topics", topic.value, {
-                                        value: topic.value,
-                                        label: topic.value,
-                                    });
+                                    if (!validate("Add")) {
+                                        alert("Fill up all information!");
+                                        return;
+                                    }
+                                    UploadThenAdd(
+                                        `Assets/Topics`,
+                                        files,
+                                        topic.value,
+                                        `Topics`,
+                                        topic.value,
+                                        {
+                                            value: topic.value,
+                                            label: topic.value,
+                                            link: CleanText(topic.value),
+                                        }
+                                    );
+                                    reset();
+                                    // Add("Topics", topic.value, {
+                                    //     value: topic.value,
+                                    //     label: topic.value,
+                                    // });
                                 }}
                             >
                                 Add Topic
@@ -242,12 +324,18 @@ function ManageTopic() {
     );
 }
 
+// *******************************************************
+// *******************************************************
+//  Subject
+// *******************************************************
+// *******************************************************
+
 function ManageSubjects() {
     const [subjectName, setSubjectName] = useState("");
     const [subject, setSubject] = useState("");
     const [selectedImage, setSelectedImage] = useState([]);
-    const [isSubjectExists, setSubjectExists] = useState(false);
-
+    // const [isSubjectExists, setSubjectExists] = useState(false);
+    const [files, setFiles] = useState([]);
     const [subjectList, setSubjectList] = useState([]);
     // const options = [
     //     { value: "Math", label: "Math" },
@@ -259,12 +347,43 @@ function ManageSubjects() {
         async function getTopics() {
             setSubjectList(await Fetch("Subjects"));
         }
+        // setSubjectExists(hasKey())
+        // const hasKey = async () =>
+        //     await Fetch("Subjects", where("value", "==", subject));
     }, []);
+
+    const dataToAdd = {
+        value: subject.value,
+        label: subject.value,
+        link: CleanText(subject.value),
+    };
+
     const hasKey = (value, data) => {
         const keysArray = data.map((item) => item.value);
         // console.log(keysArray);
         //   console.log(value.value);
         return keysArray.includes(value.value);
+    };
+    var isSubjectExists = hasKey(subject, subjectList);
+    const validate = (func) => {
+        if (isSubjectExists) {
+            //  console.log(`Validate has key ${subject.value} ${subjectName}`);
+            if (func.includes("Update")) {
+                return subject && subjectName;
+            } else {
+                return subject;
+            }
+        } else {
+            //     console.log(`Validate no key ${subject}`);
+            return subject;
+        }
+    };
+    const reset = () => {
+        setSelectedImage([]);
+        setFiles([]);
+        setSubject("");
+        setSubjectName("");
+        //     setSubjectExists(false);
     };
 
     return (
@@ -278,9 +397,10 @@ function ManageSubjects() {
                         <div className="input-wrap">
                             <p className="label">Select Images</p>
                             <FileInput
+                                setFiles={setFiles}
                                 selectedImage={selectedImage}
                                 setSelectedImage={setSelectedImage}
-                                multiple="false"
+                                multiple="true"
                             />
                         </div>
                         <div className="input-wrap">
@@ -302,8 +422,13 @@ function ManageSubjects() {
                                     value={subject}
                                     onChange={(e) => {
                                         setSubject(e == null ? "" : e);
-                                        setSubjectExists(
-                                            hasKey(subject, subjectList)
+                                        // console.log(
+                                        //     "Is Subject Exists" +
+                                        //         isSubjectExists
+                                        // );
+                                        isSubjectExists = hasKey(
+                                            subject,
+                                            subjectList
                                         );
                                     }}
                                 />
@@ -321,19 +446,27 @@ function ManageSubjects() {
                                     <button
                                         className="btn btn-primary"
                                         onClick={() => {
-                                            Delete(
-                                                "Subjects",
-                                                subject,
-                                                where(
-                                                    "value",
-                                                    "==",
-                                                    `${subject}`
-                                                )
+                                            if (!validate("Update")) {
+                                                alert(
+                                                    "Fill up all information!"
+                                                );
+                                                return;
+                                            }
+                                            Delete("Subjects", subject.value);
+                                            UploadThenAdd(
+                                                `Assets/Subjects`,
+                                                files,
+                                                subject.value,
+                                                `Subjects`,
+                                                {
+                                                    value: subject.value,
+                                                    label: subject.value,
+                                                    link: CleanText(
+                                                        subject.value
+                                                    ),
+                                                }
                                             );
-                                            Add(`Subjects`, null, {
-                                                value: subject,
-                                                label: subject,
-                                            });
+                                            reset();
                                         }}
                                     >
                                         Update Subject
@@ -342,6 +475,12 @@ function ManageSubjects() {
                                         className="btn btn-primary"
                                         onClick={() => {
                                             //   console.log(subject.value);
+                                            if (!validate("Delete")) {
+                                                alert(
+                                                    "Fill up all information!"
+                                                );
+                                                return;
+                                            }
                                             if (
                                                 window.confirm(
                                                     `Are you sure you want to delete ${subject.value}?`
@@ -356,7 +495,9 @@ function ManageSubjects() {
                                                         `${subject.value}`
                                                     )
                                                 );
+                                                //setSelectedImage([]);
                                             }
+                                            reset();
                                         }}
                                     >
                                         Delete Subject
@@ -366,11 +507,29 @@ function ManageSubjects() {
                                 <button
                                     className="btn btn-primary"
                                     onClick={(e) => {
+                                        if (!validate("Add")) {
+                                            alert("Fill up all information!");
+                                            return;
+                                        }
                                         Add(`Subjects`, subject.value, {
                                             value: subject.value,
                                             label: subject.value,
                                         });
 
+                                        UploadThenAdd(
+                                            `Assets/Subjects`,
+                                            files,
+                                            subject.value,
+                                            `Subjects`,
+                                            subject.value,
+                                            {
+                                                value: subject.value,
+                                                label: subject.value,
+                                                link: CleanText(subject.value),
+                                            }
+                                        );
+
+                                        reset();
                                         e.preventDefault();
                                     }}
                                 >

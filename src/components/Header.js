@@ -50,7 +50,7 @@ const Header = () => {
                         </a>
 
                         <nav className="menu-navigation">
-                            <a href="index.html">Home</a>
+                            <a href="/">Home</a>
                             <a href="#about">About</a>
                             <Link to="/subjects">Subjects</Link>
                             <button
