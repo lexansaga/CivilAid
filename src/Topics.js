@@ -17,7 +17,7 @@ import { GetRandomBackground } from "./Utils";
 // Assets
 import { useLocation } from "react-router-dom";
 import Hero_Banner from "./assets/hero-bg.jpg";
-const Subjects = () => {
+const Topics = () => {
     const location = useLocation();
     // console.log(location);
     const [topics, setTopics] = useState([]);
@@ -29,8 +29,8 @@ const Subjects = () => {
             console.log(value != "");
             const fetch =
                 value == "" || func.includes("header-search")
-                    ? await Fetch("Subjects")
-                    : await Fetch("Subjects", where("tag", "==", `${value}`));
+                    ? await Fetch("Topics")
+                    : await Fetch("Topics", where("tag", "==", `${value}`));
             setTopics(fetch);
         }
         getFetch();
@@ -78,7 +78,7 @@ const Subjects = () => {
                                                 : GetRandomBackground()
                                         }
                                         title={item.label}
-                                        path="/topics"
+                                        path="/subject"
                                         state={{
                                             q: item.link,
                                             title: item.label,
@@ -113,4 +113,4 @@ function TopicItem(props) {
     );
 }
 
-export default Subjects;
+export default Topics;

@@ -15,7 +15,7 @@ const Banner = (props) => {
             <div className="hero-banner">
                 <h1 className="hero-title">{props.title}</h1>
             </div>
-            <a href={props.link} className="hero-arrow">
+            <a href={props.link} className="hero-arrow hidden">
                 <FontAwesomeIcon icon={faChevronDown} />
             </a>
         </section>

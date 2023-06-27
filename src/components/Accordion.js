@@ -25,8 +25,9 @@ const Accordion = (props) => {
                     </div>
                 </div>
                 <div className="accordion-content">
-                    <div className="accordion-images">
-                        {images.map((images, index) => {
+                    {/* <div className="accordion-images">
+                        {
+                        images.length != 0 ? images.map((images, index) => {
                             return (
                                 <div className="accordion-image-wrap">
                                     <img
@@ -37,7 +38,7 @@ const Accordion = (props) => {
                                 </div>
                             );
                         })}
-                    </div>
+                    </div> */}
                     <div className="text-content">{props.content}</div>
                 </div>
             </div>

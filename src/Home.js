@@ -9,18 +9,19 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 import { Fetch } from "./firebase";
-import { GetRandomBackground } from "./Utils";
+import { GetRandomBackground, NoContent } from "./Utils";
 // Assets
 import Hero_Banner from "./assets/hero-bg.jpg";
-import Math from "./assets/math.jpg";
-import Design from "./assets/design.jpg";
-import HydroGeo from "./assets/hydrogeo.jpg";
+import parse from "html-react-parser";
 const Home = () => {
     const [topics, setTopics] = useState([]);
+    const [welcome, setWelcome] = useState("");
     useEffect(() => {
         async function getFetch() {
-            const fetch = await Fetch("Topics");
+            const fetch = await Fetch("Subjects");
             setTopics(fetch);
+            const fetchWelcome = await Fetch("Welcome");
+            setWelcome(fetchWelcome[0].Excerpt);
         }
         getFetch();
         console.log(topics);
@@ -42,7 +43,7 @@ const Home = () => {
                         Civil <span>Aid</span>
                     </h1>
                 </div>
-                <a href="#topics" className="hero-arrow">
+                <a href="#about" className="hero-arrow">
                     <FontAwesomeIcon icon={faChevronDown} />
                 </a>
             </section>
@@ -52,51 +53,28 @@ const Home = () => {
                     <div className="section-header">
                         <h5>What is</h5>
                         <h2>
-                            Civil <span>Aid</span>
+                            Civil <span>Engineering</span>
                         </h2>
                     </div>
-                    <div className="welcome-content">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum.
-                        </p>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum.
-                        </p>
-                        <p>
-                            fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum.
-                        </p>
+                    <div className="welcome-content ql-editor">
+                        {parse(welcome)}
+                        <Link className="btn btn-primary" to="/about">
+                            Learn More
+                        </Link>
                     </div>
                 </div>
             </section>
 
-            <section className="topics" id="topics">
+            <section className="topics hidden" id="topics">
                 <div className="section-header">
                     <h5>Choose</h5>
                     <h2>
-                        <span>Topics</span>
+                        <span>Subject</span>
                     </h2>
                 </div>
 
                 <div className="topic-wrapper">
-                    {topics &&
+                    {topics ? (
                         topics.map((item, index) => {
                             return (
                                 <TopicItem
@@ -108,11 +86,15 @@ const Home = () => {
                                     title={item.label}
                                     path="/subjects"
                                     state={{
-                                        title: item.link,
+                                        q: item.link,
+                                        title: item.value,
                                     }}
                                 />
                             );
-                        })}
+                        })
+                    ) : (
+                        <NoContent content={"No Content"} />
+                    )}
                     {/* <TopicItem image={Math} title={"Math"} path="/subjects" />
                     <TopicItem
                         image={HydroGeo}
@@ -138,13 +120,7 @@ function TopicItem(props) {
             <img className="topic-image" src={props.image} alt={props.title} />
 
             <h2 className="topic-title">{props.title}</h2>
-            <Link
-                className="overlink"
-                to={{
-                    pathname: props.path,
-                    state: props.state,
-                }}
-            >
+            <Link className="overlink" to={props.path} state={props.state}>
                 Learn More
             </Link>
         </div>

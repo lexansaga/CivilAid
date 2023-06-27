@@ -1,17 +1,22 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../styles/Header.css";
 import Logo from "../assets/logo.png";
+import { Fetch } from "../firebase";
+import { where } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faMagnifyingGlass,
     faX,
     faBars,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
+    const [search, setSearch] = useState("");
     useEffect(() => {
         document.body.classList.toggle("menu-open", isOpen);
     }, [isOpen]);
@@ -33,6 +38,19 @@ const Header = () => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+    const [topics, setTopics] = useState([]);
+
+    const handleKeyDown = async (event) => {
+        if (event.key === "Enter") {
+            navigate("/subject", {
+                state: {
+                    q: search,
+                    title: "Search Topic",
+                    func: "header-search",
+                },
+            });
+        }
+    };
 
     return (
         <>
@@ -51,8 +69,16 @@ const Header = () => {
 
                         <nav className="menu-navigation">
                             <a href="/">Home</a>
-                            <a href="#about">About</a>
-                            <Link to="/subjects">Subjects</Link>
+                            <Link
+                                to="/subjects"
+                                state={{
+                                    q: "",
+                                    title: "All Subjects",
+                                }}
+                            >
+                                Subjects
+                            </Link>
+                            <a href="/about">About</a>
                             <button
                                 className="menu-close"
                                 onClick={() => setIsOpen(!isOpen)}
@@ -66,6 +92,9 @@ const Header = () => {
                             type="text"
                             className="search-input"
                             placeholder="Search"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={handleKeyDown}
                         />
                         <FontAwesomeIcon
                             className="search-icon"

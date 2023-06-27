@@ -1,55 +1,150 @@
 // Modules
 
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
+
+import { useReactToPrint } from "react-to-print";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Banner from "./components/Banner";
 import Accordion from "./components/Accordion";
 import "./styles/Homepage.css";
+import "./styles/SubTopic.css";
 
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { IsNull } from "./Utils";
+import { Fetch } from "./firebase";
+import { where, orderBy, query, collection } from "firebase/firestore";
+import { firestore } from "./firebase";
+import html2canvas from "html2canvas";
+import parse from "html-react-parser";
+import { jsPDF } from "jspdf";
+import JsPDF from "jspdf";
+
 // Assets
 import Hero_Banner from "./assets/hero-bg.jpg";
-import Math from "./assets/math.jpg";
-import Design from "./assets/design.jpg";
-import HydroGeo from "./assets/hydrogeo.jpg";
 const Subject = (props) => {
-    const images = [Math, Design, HydroGeo];
-    const { state } = useLocation();
-    console.log();
+    const location = useLocation();
+    console.log(location);
+
+    const [topics, setTopics] = useState([]);
+    const func = location.state.func != null ? location.state.func : "";
+    const [subTopics, setSubTopics] = useState([]);
+    const value = !IsNull(location) ? "" : location.state.q;
+    console.log(value);
+    useEffect(() => {
+        async function getFetch() {}
+        getFetch();
+        const images = document.querySelectorAll("img");
+        images.forEach((img) => {
+            img.setAttribute("loading", "lazy");
+        });
+        async function getFetch() {
+            if (func.includes("header-search")) {
+                // console.log(value != "");
+                const fetch = await Fetch("Content");
+                // console.log(fetch);
+                setSubTopics(fetch);
+            } else {
+                const fetch = !IsNull(location)
+                    ? await Fetch("Content")
+                    : await Fetch(
+                          null,
+                          null,
+                          query(
+                              collection(firestore, "Content"),
+                              where("topicTag", "==", `${value}`),
+                              orderBy("sortKey", "asc")
+                          )
+                      );
+                setSubTopics(fetch);
+            }
+        }
+        getFetch();
+    }, []);
+
+    const generatePDF = () => {
+        const accordionDivs = document.querySelectorAll(".accordion");
+
+        accordionDivs.forEach((item) => {
+            // Perform operations on each div here
+            item.classList.add("active");
+        });
+    };
+
+    const componentRef = useRef();
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    });
+    // console.log(subTopics);
     return (
         <div className="body internal">
             <Header />
-            <Banner image={Hero_Banner} title={state.title} link="#topics" />
+            <Banner
+                image={Hero_Banner}
+                title={location.state.title}
+                link="#topics"
+            />
 
             <section id="ip-container">
                 <div className="container">
-                    <Accordion
-                        index={1}
-                        title="Topic 1"
-                        images={images}
-                        content={
-                            <>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua.
-                                    Ut enim ad minim veniam, quis nostrud
-                                    exercitation ullamco laboris nisi ut aliquip
-                                    ex ea commodo consequat. Duis aute irure
-                                    dolor in reprehenderit in voluptate velit
-                                    esse cillum dolore eu fugiat nulla pariatur.
-                                    Excepteur sint occaecat cupidatat non
-                                    proident, sunt in culpa qui officia deserunt
-                                    mollit anim id est laborum.
-                                </p>
-                                <a href="#" className="btn btn-primary">
-                                    Hello World
-                                </a>
-                            </>
-                        }
-                    />
+                    <button
+                        className="btn btn-primary download-pdf"
+                        onClick={() => {
+                            generatePDF();
+                            handlePrint();
+                        }}
+                    >
+                        Download as PDF
+                    </button>
+                    <div
+                        id="SubTopic-Wrap"
+                        className="SubTopic-Wrap"
+                        ref={componentRef}
+                    >
+                        {subTopics
+                            ? subTopics.map((item, index) => {
+                                  //   console.log(
+                                  //       `${item.SubTopic} : ${item.sortKey}`
+                                  //   );
+                                  if (func.includes("header-search")) {
+                                      //   console.log(
+                                      //       `${item.content
+                                      //           .toLowerCase()
+                                      //           .includes(
+                                      //               value.toLowerCase()
+                                      //           )} : ${value.toLowerCase()}`
+                                      //   );
+                                      if (
+                                          item.SubTopic.toLowerCase().includes(
+                                              value.toLowerCase()
+                                          ) ||
+                                          item.content
+                                              .toLowerCase()
+                                              .includes(value.toLowerCase())
+                                      ) {
+                                          return (
+                                              <Accordion
+                                                  index={1}
+                                                  title={item.SubTopic}
+                                                  // images={images}
+                                                  content={parse(item.content)}
+                                              />
+                                          );
+                                      }
+                                  } else {
+                                      return (
+                                          <Accordion
+                                              index={1}
+                                              title={item.SubTopic}
+                                              // images={images}
+                                              content={parse(item.content)}
+                                          />
+                                      );
+                                  }
+                              })
+                            : "No Content"}
+                    </div>
                 </div>
             </section>
 

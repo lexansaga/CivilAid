@@ -22,6 +22,8 @@ html {
 
         height: 100%;
 
+        min-height: 1080px;
+
 }
 
 html,
@@ -30,8 +32,34 @@ body {
         scroll-behavior: smooth;
 }
 
-body {
-        min-height: 100%
+#root,
+#root .App,
+body,
+.body {
+        height: 100%;
+}
+
+.body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+}
+
+body:after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-image: url(https://firebasestorage.googleapis.com/v0/b/civilaid-65d59.appspot.com/o/Assets%2FAsset%2Fwatermark.png?alt=media&token=0bdcaeef-b84d-4cc9-b7dc-ead63beea248);
+        background-repeat: space;
+        background-size: 20%;
+        z-index: 99999999999999999999;
+
+        pointer-events: none;
+        opacity: 0.1;
 }
 
 *:not(.carousel *):not(.ry-accordion *):not(#accordion *):not([data-aos-duration]),
@@ -63,6 +91,7 @@ body {
 }
 
 .container {
+        position: relative;
         max-width: 1600px;
         width: 90%;
         float: none;
@@ -70,6 +99,7 @@ body {
 }
 
 .container-fluid {
+        position: relative;
         width: 100%;
         float: none;
         margin: 0 auto;
@@ -144,8 +174,18 @@ body {
         padding: 120px 0
 }
 
+.content ol,
+.content ul {
+        padding: 0 0 0 36px
+}
+
+p,
+li {
+        line-height: 1.5;
+}
+
 .btn {
-        cursor: pointer;
+        cursor: pointer !important;
         border: none;
         outline: none;
         padding: 12px 24px;
@@ -251,4 +291,11 @@ body {
 
 .preview[style*="null"] {
         display: none;
+}
+
+.hidden {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        position: absolute !important;
 }

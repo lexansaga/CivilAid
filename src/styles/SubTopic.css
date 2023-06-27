@@ -1,0 +1,7 @@
+.btn.download-pdf {
+        position: absolute;
+        top: -60px;
+        right: 0;
+        float: none;
+        margin: 0 0 48px auto;
+}

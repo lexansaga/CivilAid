@@ -25,6 +25,7 @@ import {
     getDownloadURL,
     updateMetadata,
 } from "firebase/storage";
+
 import { useEffect } from "react";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -96,10 +97,19 @@ const Delete = async (parent, id, collectionQuery) => {
     }
 };
 
-const Fetch = async (collectionName, collectionQuery) => {
-    const q = collectionQuery
-        ? query(collection(firestore, collectionName), collectionQuery)
-        : query(collection(firestore, collectionName));
+const Fetch = async (collectionName, collectionQuery, fetchQuery) => {
+    var q;
+    console.log(fetchQuery);
+    if (fetchQuery) {
+        q = fetchQuery;
+        console.log("Has Fetch");
+    } else {
+        q = collectionQuery
+            ? query(collection(firestore, collectionName), collectionQuery)
+            : query(collection(firestore, collectionName));
+
+        console.log("No Fetch");
+    }
 
     var options = [];
     const querySnapshot = await getDocs(q);
@@ -251,6 +261,27 @@ const GetFileByFileName = async (path, fileName) => {
             // Uh-oh, an error occurred!
         });
     return results;
+};
+
+const GellAllFilesLink = (referrence) => {
+    // Create a reference under which you want to list
+    const listRef = ref(storage, referrence);
+    const filesLink = [];
+    // Find all the prefixes and items.
+    listAll(listRef)
+        .then((res) => {
+            res.prefixes.forEach((folderRef) => {
+                // All the prefixes under listRef.
+                // You may call listAll() recursively on them.
+            });
+            res.items.forEach((itemRef) => {
+                // All the items under listRef.
+                console.log(itemRef);
+            });
+        })
+        .catch((error) => {
+            // Uh-oh, an error occurred!
+        });
 };
 // async function fetchFilesContainingText(text) {
 //     const storageRef = ref(storage, "Assets/Subjects");

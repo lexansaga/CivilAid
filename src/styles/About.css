@@ -1,0 +1,98 @@
+@import url(Styles.css);
+
+.proponents {
+        margin: 48px 0 0 0
+}
+
+.proponents .proponents-campus {
+        margin: 18px 0 0
+}
+
+.proponents-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 18px;
+        max-width: 1600px;
+        float: none;
+        margin: 48px auto 0;
+        flex-direction: row;
+        align-items: center;
+}
+
+.proponents-wrap .proponents-item {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        gap: 18px;
+        align-items: center;
+        width: 45%;
+}
+
+.proponents-wrap .proponents-image {
+        border: 1px solid #ccc;
+        position: relative;
+        height: 200px;
+        width: 200px;
+        overflow: hidden;
+}
+
+.proponents-wrap .proponents-image:hover img {
+        transform: scale(1.1);
+}
+
+.proponents-image img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-position: center;
+        object-fit: contain
+}
+
+.proponents-item p {
+        text-transform: uppercase;
+        max-width: 98%;
+        text-align: left;
+        line-height: 1.3;
+        font-size: 25px;
+        font-weight: 500
+}
+
+.proponents-item .proponents-campus {
+        font-size: 20px
+}
+
+.proponents-item .proponents-campus i {
+        display: block;
+}
+
+
+@media only screen and (max-width:1199px) {
+        .proponents-wrap {
+                flex-direction: column;
+                align-items: flex-start;
+        }
+
+        .proponents-wrap .proponents-item {
+                width: 100%;
+        }
+}
+
+@media only screen and (max-width: 600px) {
+        .proponents-wrap {
+                gap: 48px;
+        }
+
+        .proponents-wrap .proponents-item {
+                flex-direction: column;
+                gap: 18px;
+        }
+
+        .proponents-wrap .proponents-item p {
+                text-align: center !important;
+        }
+
+        .proponents-item .proponents-campus {
+                margin: 8px 0 0 0
+        }
+}
