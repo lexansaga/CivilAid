@@ -53,7 +53,7 @@ body:after {
         left: 0;
         height: 100%;
         width: 100%;
-        background-image: url(https://firebasestorage.googleapis.com/v0/b/civilaid-65d59.appspot.com/o/Assets%2FAsset%2Fwatermark.png?alt=media&token=0bdcaeef-b84d-4cc9-b7dc-ead63beea248);
+        /* background-image: url(https://firebasestorage.googleapis.com/v0/b/civilaid-65d59.appspot.com/o/Assets%2FAsset%2Fwatermark.png?alt=media&token=0bdcaeef-b84d-4cc9-b7dc-ead63beea248); */
         background-repeat: space;
         background-size: 20%;
         z-index: 99999999999999999999;

@@ -1,1 +1,3 @@
 firebase deploy --only hosting:civilaid
+
+"site": "civilaidsite",
